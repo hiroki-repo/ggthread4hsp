@@ -4,7 +4,9 @@ sdim testctx,4096,256
 testint=0
 
 ggthreadsetpc testctx(0),*hello1
+ggthreadloadenv testctx(0)
 ggthreadsetpc testctx(1),*hello2
+ggthreadloadenv testctx(1)
 //stop
 repeat
 repeat 256:if lpeek(testctx(cnt),0)!0{ggthreadrun testctx(cnt)}:loop
