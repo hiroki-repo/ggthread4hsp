@@ -1,0 +1,24 @@
+#runtime "hsp3cl"
+#include "ggthread.as"
+sdim testctx,4096,256
+testint=0
+
+ggthreadsetpc testctx(0),*hello1
+ggthreadsetpc testctx(1),*hello2
+//stop
+repeat
+repeat 256:if lpeek(testctx(cnt),0)!0{ggthreadrun testctx(cnt)}:loop
+await
+loop
+
+
+*hello1
+mes "Hello!"
+mes testint:testint+=1
+goto *hello1
+*hello2
+mes "Hello,World!"
+goto *hello2
+
+
+stop
