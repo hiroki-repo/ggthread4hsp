@@ -88,6 +88,12 @@ labelliesx=labellies_0
 lpoke ggthreadctxtmp,4*0,lpeek(labelliesx,0)
 return
 
+#deffunc ggthreadsetstks var ggthreadctxtmp,int prm_0,int prm_1
+dupptr ggthreadctx,varptr(ggthreadctxtmp),4096,2
+lpoke ggthreadctx,4*1,prm_0
+lpoke ggthreadctx,4*2,prm_1
+return
+
 #deffunc ggthreadrun var ggthreadctxtmp
 dupptr ggthreadctx,varptr(ggthreadctxtmp),4096,2
 retflag=0
@@ -119,7 +125,7 @@ swbreak
 case 0xe
 	switch opmain
 		case 4
-		bctype=lpeek(ggthcntidbct,0):if bctype&0x8000{opmain=lpeek(ggthcntidstr,2)}else{opmain=wpeek(ggthcntidstr,2)}:cntins=1
+		bctype=lpeek(ggthcntidbct,0)|(bctype&0x7000):if bctype&0x8000{opmain=lpeek(ggthcntidstr,2)}else{opmain=wpeek(ggthcntidstr,2)}:cntins=1
 		swbreak
 	swend
 swbreak
