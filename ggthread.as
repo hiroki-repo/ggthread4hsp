@@ -94,6 +94,12 @@ lpoke ggthreadctx,4*1,prm_0
 lpoke ggthreadctx,4*2,prm_1
 return
 
+#deffunc ggthreadloadenv var ggthreadctxtmp
+dupptr ggthreadctx,varptr(ggthreadctxtmp),4096,2
+memcpy ggthreadctx,hspctx,8,4*3,864
+memcpy ggthreadctx,hspctx,4*14,4*5,780
+return
+
 #deffunc ggthreadrun var ggthreadctxtmp
 dupptr ggthreadctx,varptr(ggthreadctxtmp),4096,2
 retflag=0
