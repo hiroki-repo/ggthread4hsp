@@ -96,6 +96,7 @@ return
 
 #deffunc ggthreadloadenv var ggthreadctxtmp
 dupptr ggthreadctx,varptr(ggthreadctxtmp),4096,2
+mref hspctx,68
 memcpy ggthreadctx,hspctx,8,4*3,864
 memcpy ggthreadctx,hspctx,4*14,4*5,780
 return
