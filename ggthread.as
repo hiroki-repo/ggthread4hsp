@@ -85,10 +85,14 @@ return retcnt
 labelliesx=labellies_0
 dupptr ggthreadctx_gsar,lpeek(ggthreadctx,4*2),4096,4
 lpoke ggthreadctx_gsar(0),0,ggthreadctx_gsar(0)-1
-lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+2),0,rpt_1
+/*lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+2),0,rpt_1
 if ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+2)<ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+1){
 lpoke ggthreadctx,4*0,lpeek(ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1),0)
-}else{lpoke ggthreadctx,4*0,lpeek(labelliesx,0)}
+}else{lpoke ggthreadctx,4*0,lpeek(labelliesx,0)}*/
+if lpeek(ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1),0)!0{lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+2),0,rpt_1}
+if ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+2)<ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+1) or ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+1)<0{
+lpoke ggthreadctx,4*0,lpeek(ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1),0)
+}else{lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1),0,0}
 return
 
 #deffunc ggthreadsetpc var ggthreadctxtmp,label labellies_0
@@ -120,9 +124,9 @@ firstcount=0:bytecodetocnt=0:repins=0:contins=0:cntins=0:mcsbak=0
 repeat:bctype=wpeek(bytecodefrom,cnt)
 if (bctype&0x2000)!0{firstcount+=1}
 if cntins=1{wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,40:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,41:bytecodetocnt+=4:cntins=0}
-if firstcount>=2{if repins=2{wpoke bytecodeto,bytecodetocnt+2,0x4004|0x8000:lpoke bytecodeto,bytecodetocnt+2,-1:bytecodetocnt+=6}:if contins=2{wpoke bytecodeto,bytecodetocnt+2,0x500C|0x8000:if ggthcntidbct&0x8000{lpoke bytecodeto,bytecodetocnt+2,lpeek(ggthcntidstr,2)}else{lpoke bytecodeto,bytecodetocnt+2,wpeek(ggthcntidstr,2)}:bytecodetocnt+=6:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,40:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,41:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,4:wpoke bytecodeto,bytecodetocnt+2,1:bytecodetocnt+=4}:cntend=cnt:break}
-if repins>=1{repins=0}
-if contins>=1{contins=0}
+if firstcount>=2{if repins=2{wpoke bytecodeto,bytecodetocnt,0x5004|0x8000:lpoke bytecodeto,bytecodetocnt+2,-1:bytecodetocnt+=6}:if contins=2{wpoke bytecodeto,bytecodetocnt,0x400C|0x8000:if ggthcntidbct&0x8000{lpoke bytecodeto,bytecodetocnt+2,lpeek(ggthcntidstr,2)}else{lpoke bytecodeto,bytecodetocnt+2,wpeek(ggthcntidstr,2)}:bytecodetocnt+=6:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,40:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,41:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,4:wpoke bytecodeto,bytecodetocnt+2,1:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,0:bytecodetocnt+=4}:cntend=cnt:break}
+if repins>1{repins=0}
+if contins>1{contins=0}
 wpoke bytecodeto,bytecodetocnt+0,bctype
 if (bctype&0x8000){opmain=lpeek(bytecodefrom,cnt+2)}else{opmain=wpeek(bytecodefrom,cnt+2)}
 switch (bctype&0xfff)
