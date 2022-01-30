@@ -24,6 +24,10 @@ ggthgotoidptrx=*ggthelseidptr
 dupptr ggthelseidstr,lpeek(ggthgotoidptrx,0),256,2:ggthelseidbct=wpeek(ggthelseidstr,0)
 ggthgotoidptrx=*ggthexgotoidptr
 dupptr ggthexgotoidstr,lpeek(ggthgotoidptrx,0),256,2:ggthexgotoidbct=wpeek(ggthexgotoidstr,0)
+ggthgotoidptrx=*ggthlooplevidptr
+dupptr ggthlooplevidstr,lpeek(ggthgotoidptrx,0),256,2:ggthlooplevidbct=wpeek(ggthlooplevidstr,0)
+ggthgotoidptrx=*ggthsublevidptr
+dupptr ggthsublevidstr,lpeek(ggthgotoidptrx,0),256,2:ggthsublevidbct=wpeek(ggthsublevidstr,0)
 ggthgotoxefptr=*ggthgotoxef
 dupptr ggthgotoxefstr,lpeek(ggthgotoxefptr,0),256,2:if wpeek(ggthgotoxefstr,0)&0x8000{ggthgotoxefptrpls=6}else{ggthgotoxefptrpls=4}
 dupptr ggthgotoxefstr2,lpeek(ggthgotoxefptr,0)+ggthgotoxefptrpls,256,2::if wpeek(ggthgotoxefstr2,0)&0x8000{ggthgotoxefptrpls+=6}else{ggthgotoxefptrpls+=4}
@@ -117,6 +121,14 @@ return
 lpoke ggthreadctx,4*0,lpeek(labelliesx,0)
 return
 
+#defcfunc local ggthread_looplev
+dupptr ggthreadctx_gsar,lpeek(ggthreadctx,4*2),4096,4
+return ggthreadctx_gsar(0)
+
+#defcfunc local ggthread_sublev
+dupptr ggthreadctx_gsar,lpeek(ggthreadctx,4*1),4096,4
+return ggthreadctx_gsar(0)
+
 #deffunc ggthreadsetpc var ggthreadctxtmp,label labellies_0
 dupptr ggthreadctx,varptr(ggthreadctxtmp),4096,2
 labelliesx=labellies_0
@@ -181,6 +193,12 @@ case 0xe
 	switch opmain
 		case 4
 		bctype=(wpeek(ggthcntidbct,0)&0x8fff)|(bctype&0x7000):if bctype&0x8000{opmain=lpeek(ggthcntidstr,2)}else{opmain=wpeek(ggthcntidstr,2)}:cntins=1
+		swbreak
+		case 7
+		bctype=(wpeek(ggthlooplevidbct,0)&0x8fff)|(bctype&0x7000):if bctype&0x8000{opmain=lpeek(ggthlooplevidstr,2)}else{opmain=wpeek(ggthlooplevidstr,2)}:cntins=1
+		swbreak
+		case 8
+		bctype=(wpeek(ggthsublevidbct,0)&0x8fff)|(bctype&0x7000):if bctype&0x8000{opmain=lpeek(ggthsublevidstr,2)}else{opmain=wpeek(ggthsublevidstr,2)}:cntins=1
 		swbreak
 	swend
 swbreak
@@ -264,6 +282,12 @@ ggthread_else
 return
 *ggthexgotoidptr
 ggthread_exgoto
+return
+*ggthlooplevidptr
+ggthread_looplev
+return
+*ggthsublevidptr
+ggthread_sublev
 return
 
 *ggthgotoxef
