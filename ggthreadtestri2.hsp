@@ -1,0 +1,52 @@
+#runtime "hsp3cl"
+#include "ggthread.as"
+sdim testctx,4096,256
+dim testctxrcg,1024,2,256
+testint=0
+
+ggthreadsetpc testctx(0),*hello1
+ggthreadloadenv testctx(0)
+ggthreadsetstks testctx(0),varptr(testctxrcg(0,0,0)),varptr(testctxrcg(0,1,0))
+ggthreadsetpc testctx(1),*hello2
+ggthreadloadenv testctx(1)
+ggthreadsetstks testctx(1),varptr(testctxrcg(0,0,1)),varptr(testctxrcg(0,1,1))
+ggthreadsetpc testctx(2),*hello3
+ggthreadloadenv testctx(2)
+ggthreadsetstks testctx(2),varptr(testctxrcg(0,0,2)),varptr(testctxrcg(0,1,2))
+ggthreadsetpc testctx(3),*hello4
+ggthreadloadenv testctx(3)
+ggthreadsetstks testctx(3),varptr(testctxrcg(0,0,3)),varptr(testctxrcg(0,1,3))
+//stop
+repeat
+repeat 512
+repeat 256:if lpeek(testctx(cnt),0)!0{ggthreadrun testctx(cnt)}:loop
+loop
+await
+loop
+
+
+*hello1
+repeat 5
+/*mes "Hello!"
+mes testint:testint+=1*/
+cntx=cnt
+if cntx=2{continue}
+mes cntx
+loop
+goto *hello1
+*hello2
+mes "Hello,World!"
+goto *hello2
+*hello3
+repeat 5
+if cnt=3{mes "a"}else{mes "b"}
+loop
+goto *hello3
+*hello4
+for i,0,5,1
+mes "i="+str(i)
+next
+goto *hello4
+
+
+stop
