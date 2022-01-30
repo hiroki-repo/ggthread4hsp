@@ -143,7 +143,7 @@ dupptr bytecodefrom,lpeek(ggthreadctx,4*0),256,2
 mref hspctx,68
 sdim bytecodeto,4096
 firstcount=0:bytecodetocnt=0:repins=0:contins=0:cntins=0:mcsbak=0:ifelse=0:ifins=0:elseins=0:skpoffset=0:isskp6=0:ifelseptrtmp=0
-repeat:bctype=wpeek(bytecodefrom,cnt):ifelse=0
+repeat:bctype=wpeek(bytecodefrom,cnt):ifelse=0:bctypemain=lpeek(bctype,0)
 if (bctype&0x2000)!0{firstcount+=1}
 if cntins=1{wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,40:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,41:bytecodetocnt+=4:cntins=0}
 if firstcount>=2{if repins=2{wpoke bytecodeto,bytecodetocnt,0x5004|0x8000:lpoke bytecodeto,bytecodetocnt+2,-1:bytecodetocnt+=6}:if contins=2{wpoke bytecodeto,bytecodetocnt,0x400C|0x8000:if ggthcntidbct&0x8000{lpoke bytecodeto,bytecodetocnt+2,lpeek(ggthcntidstr,2)}else{lpoke bytecodeto,bytecodetocnt+2,wpeek(ggthcntidstr,2)}:bytecodetocnt+=6:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,40:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,41:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,4:wpoke bytecodeto,bytecodetocnt+2,2:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,0:bytecodetocnt+=4}:cntend=cnt:break}
@@ -216,7 +216,7 @@ swend
 if opmain>65535{wpoke bytecodeto,bytecodetocnt,bctype|0x8000}else{wpoke bytecodeto,bytecodetocnt,bctype}
 if (wpeek(bytecodeto,bytecodetocnt)&0x8000){lpoke bytecodeto,bytecodetocnt+2,opmain:bytecodetocnt+=6}else{wpoke bytecodeto,bytecodetocnt+2,opmain:bytecodetocnt+=4}
 if ifelse=1{wpoke bytecodeto,bytecodetocnt,0x1004:wpoke bytecodeto,bytecodetocnt+2,skpoffset:bytecodetocnt+=4}
-continue cnt+2+((((bctype&0x8000)!0)+1)*2)+((ifelse!0)*2):loop
+continue cnt+2+((((bctypemain&0x8000)!0)+1)*2)+((ifelse!0)*2):loop
 memcpy bytecodeto,ggthgotoxefstr,ggthgotoxefptrpls,bytecodetocnt,0
 mcsbak=lpeek(ggthreadctx,4*0)
 lpoke ggthreadctx,4*0,lpeek(ggthreadctx,4*0)+cntend
