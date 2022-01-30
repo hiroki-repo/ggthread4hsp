@@ -22,6 +22,8 @@ ggthgotoidptrx=*ggthifidptr
 dupptr ggthifidstr,lpeek(ggthgotoidptrx,0),256,2:ggthifidbct=wpeek(ggthifidstr,0)
 ggthgotoidptrx=*ggthelseidptr
 dupptr ggthelseidstr,lpeek(ggthgotoidptrx,0),256,2:ggthelseidbct=wpeek(ggthelseidstr,0)
+ggthgotoidptrx=*ggthexgotoidptr
+dupptr ggthexgotoidstr,lpeek(ggthgotoidptrx,0),256,2:ggthexgotoidbct=wpeek(ggthexgotoidstr,0)
 ggthgotoxefptr=*ggthgotoxef
 dupptr ggthgotoxefstr,lpeek(ggthgotoxefptr,0),256,2:if wpeek(ggthgotoxefstr,0)&0x8000{ggthgotoxefptrpls=6}else{ggthgotoxefptrpls=4}
 dupptr ggthgotoxefstr2,lpeek(ggthgotoxefptr,0)+ggthgotoxefptrpls,256,2::if wpeek(ggthgotoxefstr2,0)&0x8000{ggthgotoxefptrpls+=6}else{ggthgotoxefptrpls+=4}
@@ -67,7 +69,7 @@ if rpt_1=0{lpoke ggthreadctx,4*0,lpeek(labelliesx,0)}else{
 lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1),0,mcsbak//lpeek(ggthreadctx,4*0)
 if rpt_1<0{
 lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+1),0,-1
-lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+2),0,0
+lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+2),0,rpt_2
 }else{
 lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+1),0,rpt_1+rpt_2
 lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+2),0,rpt_2
@@ -107,6 +109,14 @@ return
 lpoke ggthreadctx,4*0,ifelseptrtmp+(rpt_0*2)
 return
 
+#deffunc local ggthread_exgoto var rpt_0,int rpt_1,int rpt_2,label labellies_0
+labelliesx=labellies_0
+exgoto rpt_0,rpt_1,rpt_2,*ggthreadexg1
+return
+*ggthreadexg1
+lpoke ggthreadctx,4*0,lpeek(labelliesx,0)
+return
+
 #deffunc ggthreadsetpc var ggthreadctxtmp,label labellies_0
 dupptr ggthreadctx,varptr(ggthreadctxtmp),4096,2
 labelliesx=labellies_0
@@ -137,7 +147,7 @@ repeat:bctype=wpeek(bytecodefrom,cnt):ifelse=0
 if (bctype&0x2000)!0{firstcount+=1}
 if cntins=1{wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,40:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,41:bytecodetocnt+=4:cntins=0}
 if firstcount>=2{if repins=2{wpoke bytecodeto,bytecodetocnt,0x5004|0x8000:lpoke bytecodeto,bytecodetocnt+2,-1:bytecodetocnt+=6}:if contins=2{wpoke bytecodeto,bytecodetocnt,0x400C|0x8000:if ggthcntidbct&0x8000{lpoke bytecodeto,bytecodetocnt+2,lpeek(ggthcntidstr,2)}else{lpoke bytecodeto,bytecodetocnt+2,wpeek(ggthcntidstr,2)}:bytecodetocnt+=6:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,40:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,41:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,4:wpoke bytecodeto,bytecodetocnt+2,2:bytecodetocnt+=4:wpoke bytecodeto,bytecodetocnt+0,0:wpoke bytecodeto,bytecodetocnt+2,0:bytecodetocnt+=4}:cntend=cnt:break}
-if repins>1{repins=0}
+if repins>1{if (bctype&0x4000){wpoke bytecodeto,bytecodetocnt,0x5004|0x8000:lpoke bytecodeto,bytecodetocnt+2,-1:bytecodetocnt+=6}:repins=0}
 if contins>1{contins=0}
 wpoke bytecodeto,bytecodetocnt+0,bctype
 if (bctype&0x8000){opmain=lpeek(bytecodefrom,cnt+2)}else{opmain=wpeek(bytecodefrom,cnt+2)}
@@ -197,6 +207,9 @@ case 0xf
 		case 6
 		bctype=lpeek(ggthcontinueidbct,0):if bctype&0x8000{opmain=lpeek(ggthcontinueidstr,2)}else{opmain=wpeek(ggthcontinueidstr,2)}:contins=1
 		swbreak
+		case 0x18
+		bctype=lpeek(ggthexgotoidbct,0):if bctype&0x8000{opmain=lpeek(ggthexgotoidstr,2)}else{opmain=wpeek(ggthexgotoidstr,2)}:contins=1
+		swbreak
 	swend
 swbreak
 swend
@@ -248,6 +261,9 @@ ggthread_if
 return
 *ggthelseidptr
 ggthread_else
+return
+*ggthexgotoidptr
+ggthread_exgoto
 return
 
 *ggthgotoxef
