@@ -102,7 +102,7 @@ lpoke ggthreadctx,4*0,lpeek(ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1),0)
 if lpeek(ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1),0)!0{lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+2),0,rpt_1}
 if ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+2)<ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+1) or ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1+1)<0{
 lpoke ggthreadctx,4*0,lpeek(ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1),0)
-}else{lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1),0,0}
+}else{lpoke ggthreadctx_gsar((ggthreadctx_gsar(0)*3)+1),0,0:lpoke ggthreadctx,4*0,lpeek(labelliesx,0)}
 return
 
 #deffunc local ggthread_if int rpt_0, int rpt_1
